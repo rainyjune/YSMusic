@@ -4,6 +4,7 @@
  * @version $Id$
  *
  */
+
 class UserController extends Controller
 {
 	/**
