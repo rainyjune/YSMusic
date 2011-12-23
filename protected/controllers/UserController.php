@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @author rainyjune <dreamneverfall@gmail.com>
+ * @version $Id$
+ *
+ */
 class UserController extends Controller
 {
 	/**
