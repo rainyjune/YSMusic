@@ -13,13 +13,41 @@ $this->menu=array(
 );
 ?>
 
-<h1>View User #<?php echo $model->id; ?></h1>
+<h1>
+	<?php 
+	echo $model->username; 
+	if($model->profile->name)
+		echo '('.$model->profile->name.')';
+	?>
+</h1>
 
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
-		'id',
-		'username',
-		'email',
+		array(
+			'label'=>'Name',
+			'value'=>$model->profile->name,
+			'visible'=>$model->profile->name,
+		),
+		array(
+			'label'=>'Email',
+			'value'=>$model->profile->email,
+			'visible'=>$model->profile->email,
+		),
+		array(
+			'label'=>'WebSite/Blog',
+			'value'=>CHtml::link($model->profile->blog,$model->profile->blog),
+			'type'=>'html',
+			'visible'=>$model->profile->blog,
+		),
+		array(
+			'label'=>'description',
+			'value'=>$model->profile->description,
+			'visible'=>$model->profile->description,
+		),
+		array(
+			'label'=>'Member Since',
+			'value'=>date('M j, Y',$model->regdate)
+		),
 	),
 )); ?>

@@ -1,10 +1,6 @@
 <?php
-/**
- * @author rainyjune <dreamneverfall@gmail.com>
- *
- */
 
-class UserController extends Controller
+class UserProfileController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -30,21 +26,12 @@ class UserController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow', // allow guest users to perform 'signup' action
-				'actions'=>array('signup'),
-				'users'=>array('?'),
-			),
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
-				'users'=>array('*'),
-			),
-			array('allow', // allow authenticated user to perform and 'update' action
-				'actions'=>array('update'),
+			array('allow', // allow authenticated user to perform 'create', 'update' and 'show' actions
+				'actions'=>array('show'),
 				'users'=>array('@'),
-				'expression'=>'isset($user->id) && $user->id==$_GET["id"]',
 			),
-			array('allow', // allow admin user to perform 'admin', 'create' and 'delete' actions
-				'actions'=>array('admin','delete','create'),
+			array('allow', // allow admin user to perform 'admin' and 'delete' actions
+				'actions'=>array('admin','delete'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -59,8 +46,30 @@ class UserController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$model=User::model()->with('profile')->findByPk($id);
 		$this->render('view',array(
+			'model'=>$this->loadModel($id),
+		));
+	}
+
+	/**
+	 * Allow authenticated users to create/update their profiles
+	 *
+	 */
+	public function actionShow()
+	{
+		$id=Yii::app()->user->id;
+		$model=UserProfile::model()->findByPk($id);
+		if($model===null)
+			$model=new UserProfile;
+		$this->performAjaxValidation($model);
+		if(isset($_POST['UserProfile']))
+		{
+			$model->attributes=$_POST['UserProfile'];
+			if($model->save())
+				$this->redirect(array('show'));
+		}
+		$viewFile=$model->isNewRecord?'create':'update';
+		$this->render($viewFile,array(
 			'model'=>$model,
 		));
 	}
@@ -71,37 +80,19 @@ class UserController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new User;
+		$model=new UserProfile;
 
 		// Uncomment the following line if AJAX validation is needed
-		$this->performAjaxValidation($model);
+		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['User']))
+		if(isset($_POST['UserProfile']))
 		{
-			$model->attributes=$_POST['User'];
+			$model->attributes=$_POST['UserProfile'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('view','id'=>$model->user_id));
 		}
 
 		$this->render('create',array(
-			'model'=>$model,
-		));
-	}
-
-	/**
-	 * Signup action for guest users
-	 */
-	public function actionSignup()
-	{
-		$model=new User('signup');
-		$this->performAjaxValidation($model);
-		if(isset($_POST['User']))
-		{
-			$model->attributes=$_POST['User'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
-		}
-		$this->render('signup',array(
 			'model'=>$model,
 		));
 	}
@@ -118,16 +109,13 @@ class UserController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['User']))
+		if(isset($_POST['UserProfile']))
 		{
-			if($_POST['User']['password'])
-				$_POST['User']['password']=md5($_POST['User']['password']);
-			else
-				$_POST['User']['password']=$model->password;
-			$model->attributes=$_POST['User'];
+			$model->attributes=$_POST['UserProfile'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('view','id'=>$model->user_id));
 		}
+
 		$this->render('update',array(
 			'model'=>$model,
 		));
@@ -158,7 +146,7 @@ class UserController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('User');
+		$dataProvider=new CActiveDataProvider('UserProfile');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -169,10 +157,10 @@ class UserController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new User('search');
+		$model=new UserProfile('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['User']))
-			$model->attributes=$_GET['User'];
+		if(isset($_GET['UserProfile']))
+			$model->attributes=$_GET['UserProfile'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -186,7 +174,7 @@ class UserController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=User::model()->findByPk($id);
+		$model=UserProfile::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -198,7 +186,7 @@ class UserController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='user-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='user-profile-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
