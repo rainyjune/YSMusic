@@ -1,7 +1,7 @@
 <?php
-
 /**
  * This is the model class for table "tbl_user".
+ * @author rainyjune <dreamneverfall@gmail.com>
  *
  * The followings are the available columns in table 'tbl_user':
  * @property integer $id
@@ -11,6 +11,11 @@
  */
 class User extends CActiveRecord
 {
+	/**
+	 * @var string Confirm Password
+	 */
+	public $password_confirmation;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return User the static model class
@@ -37,10 +42,17 @@ class User extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('username, password, email', 'required'),
-			array('username, password, email', 'length', 'max'=>128),
+			array('username', 'length', 'min'=>3, 'max'=>128),
+			array('username','unique'),
+			array('email', 'length', 'max'=>128),
+			array('email','email'),
+			array('email','unique'),
+			array('password', 'length', 'max'=>40),
+			array('password', 'compare', 'compareAttribute'=>'password_confirmation', 'on'=>'signup'),
+			array('password_confirmation', 'required', 'on'=>'signup'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, username, password, email', 'safe', 'on'=>'search'),
+			array('id, username, email', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -64,8 +76,35 @@ class User extends CActiveRecord
 			'id' => 'ID',
 			'username' => 'Username',
 			'password' => 'Password',
-			'email' => 'Email',
+			'password_confirmation' => 'Confirm Password',
+			'email' => 'Email Address',
 		);
+	}
+
+	/**
+	 * This is invoked before the record is saved.
+	 * @return boolean whether the record should be saved.
+	 */
+	protected function beforeSave()
+	{
+		if(parent::beforeSave())
+		{
+			if($this->isNewRecord)
+				$this->password=md5($this->password);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	/**
+	 * validate password string
+	 * @param string $password
+	 * @return boolean
+	 */
+	public function validatePassword($password)
+	{
+		return md5($password)===$this->password;
 	}
 
 	/**

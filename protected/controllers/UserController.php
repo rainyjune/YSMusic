@@ -1,7 +1,6 @@
 <?php
 /**
  * @author rainyjune <dreamneverfall@gmail.com>
- * @version $Id$
  *
  */
 
@@ -31,16 +30,21 @@ class UserController extends Controller
 	public function accessRules()
 	{
 		return array(
+			array('allow', // allow guest users to perform 'signup' action
+				'actions'=>array('signup'),
+				'users'=>array('?'),
+			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 				'actions'=>array('index','view'),
 				'users'=>array('*'),
 			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
+			array('allow', // allow authenticated user to perform and 'update' action
+				'actions'=>array('update'),
 				'users'=>array('@'),
+				'expression'=>'isset($user->id) && $user->id==$_GET["id"]',
 			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
+			array('allow', // allow admin user to perform 'admin', 'create' and 'delete' actions
+				'actions'=>array('admin','delete','create'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -69,7 +73,7 @@ class UserController extends Controller
 		$model=new User;
 
 		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		$this->performAjaxValidation($model);
 
 		if(isset($_POST['User']))
 		{
@@ -79,6 +83,24 @@ class UserController extends Controller
 		}
 
 		$this->render('create',array(
+			'model'=>$model,
+		));
+	}
+
+	/**
+	 * Signup action for guest users
+	 */
+	public function actionSignup()
+	{
+		$model=new User('signup');
+		$this->performAjaxValidation($model);
+		if(isset($_POST['User']))
+		{
+			$model->attributes=$_POST['User'];
+			if($model->save())
+				$this->redirect(array('view','id'=>$model->id));
+		}
+		$this->render('signup',array(
 			'model'=>$model,
 		));
 	}
@@ -97,11 +119,14 @@ class UserController extends Controller
 
 		if(isset($_POST['User']))
 		{
+			if($_POST['User']['password'])
+				$_POST['User']['password']=md5($_POST['User']['password']);
+			else
+				$_POST['User']['password']=$model->password;
 			$model->attributes=$_POST['User'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
-
 		$this->render('update',array(
 			'model'=>$model,
 		));

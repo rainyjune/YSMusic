@@ -30,6 +30,11 @@ return array(
 
 	// application components
 	'components'=>array(
+		// enable Cross-Site Request Forgery Prevention and Cookie validation
+		'request'=>array(
+			'enableCsrfValidation'=>true,
+			'enableCookieValidation'=>true,
+		),
 		'user'=>array(
 			// enable cookie-based authentication
 			'allowAutoLogin'=>true,
