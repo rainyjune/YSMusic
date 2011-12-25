@@ -1,5 +1,12 @@
 <div class="form">
 
+<?php
+$this->menu=array(
+	array('label'=>'Public Profile', 'url'=>array('index')),
+	array('label'=>'Account Admin', 'url'=>array('admin')),
+);
+?>
+
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'passwd-form-admin-form',
 	'enableAjaxValidation'=>true,

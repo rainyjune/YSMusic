@@ -15,4 +15,4 @@ $this->menu=array(
 
 <h1>Update UserProfile <?php echo $model->user_id; ?></h1>
 
-<?php echo $this->renderPartial('_form', array('model'=>$model)); ?>
+<?php echo $this->renderPartial('application.views.userProfile._form', array('model'=>$model)); ?>

@@ -2,43 +2,59 @@
 
 class AccountController extends Controller
 {
-	public function actionIndex()
-	{
-		$this->render('index');
-	}
+	/**
+	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
+	 * using two-column layout. See 'protected/views/layouts/column2.php'.
+	 */
+	public $layout='//layouts/column2';
 
-	public function actionProfile()
-	{
-		$model=new UserProfile;
-		$this->render('../userProfile/update',array('model'=>$model));
-	}
 
 	// Uncomment the following methods and override them if needed
-	/*
 	public function filters()
 	{
-		// return the filter configuration for this controller, e.g.:
 		return array(
-			'inlineFilterName',
-			array(
-				'class'=>'path.to.FilterClass',
-				'propertyName'=>'propertyValue',
+			'accessControl', // perform access control for CRUD operations
+		);
+	}
+
+	/**
+	 * Specifies the access control rules.
+	 * This method is used by the 'accessControl' filter.
+	 * @return array access control rules
+	 */
+	public function accessRules()
+	{
+		return array(
+			array('allow', // allow authenticated user to perform 'index', 'admin' actions
+				'actions'=>array('index','admin'),
+				'users'=>array('@'),
+			),
+			array('allow', // allow admin user to perform 'index' and 'admin' actions
+				'actions'=>array('admin','index'),
+				'users'=>array('admin'),
+			),
+			array('deny',  // deny all users
+				'users'=>array('*'),
 			),
 		);
 	}
 
-	public function actions()
+	public function actionIndex()
 	{
-		// return external action classes, e.g.:
-		return array(
-			'action1'=>'path.to.ActionClass',
-			'action2'=>array(
-				'class'=>'path.to.AnotherActionClass',
-				'propertyName'=>'propertyValue',
-			),
-		);
+		$id=Yii::app()->user->id;
+		$model=UserProfile::model()->findByPk($id);
+		if($model===null)
+			$model=new UserProfile;
+		$this->performAjaxValidation($model);
+		if(isset($_POST['UserProfile']))
+		{
+			$model->attributes=$_POST['UserProfile'];
+			if($model->save())
+				$this->redirect(array('index'));
+		}
+		$this->render('index',array('model'=>$model));
 	}
-	*/
+
 	public function actionAdmin()
 	{
 		$model=new PasswdForm;
@@ -58,5 +74,17 @@ class AccountController extends Controller
 			}
 		}
 		$this->render('admin',array('model'=>$model));
+	}
+	/**
+	 * Performs the AJAX validation.
+	 * @param CModel the model to be validated
+	 */
+	protected function performAjaxValidation($model)
+	{
+		if(isset($_POST['ajax']) && $_POST['ajax']==='user-profile-form')
+		{
+			echo CActiveForm::validate($model);
+			Yii::app()->end();
+		}
 	}
 }

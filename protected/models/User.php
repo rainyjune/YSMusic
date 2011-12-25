@@ -92,7 +92,10 @@ class User extends CActiveRecord
 		if(parent::beforeSave())
 		{
 			if($this->isNewRecord)
+			{
 				$this->password=md5($this->password);
+				$this->regdate=time();
+			}
 			return true;
 		}
 		else
