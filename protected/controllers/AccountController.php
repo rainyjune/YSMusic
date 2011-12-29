@@ -50,7 +50,10 @@ class AccountController extends Controller
 		{
 			$model->attributes=$_POST['UserProfile'];
 			if($model->save())
-				$this->redirect(array('index'));
+			{
+				Yii::app()->user->setFlash('profileSaved','Your profile Saved.');
+				$this->refresh();
+			}
 		}
 		$this->render('index',array('model'=>$model));
 	}
@@ -58,7 +61,6 @@ class AccountController extends Controller
 	public function actionAdmin()
 	{
 		$model=new PasswdForm;
-		// uncomment the following code to enable ajax-based validation
 		if(isset($_POST['ajax']) && $_POST['ajax']==='passwd-form-admin-form')
 		{
 			echo CActiveForm::validate($model);
@@ -69,8 +71,11 @@ class AccountController extends Controller
 			$model->attributes=$_POST['PasswdForm'];
 			if($model->validate())
 			{
-				User::model()->updateByPk(Yii::app()->user->id,array('password'=>md5($model->new_password)));
-				$this->redirect(array('admin'));
+				if(User::model()->updateByPk(Yii::app()->user->id,array('password'=>md5($model->new_password))))
+				{
+					Yii::app()->user->setFlash('passwordSaved','Your new password Saved.');
+					$this->refresh();
+				}
 			}
 		}
 		$this->render('admin',array('model'=>$model));

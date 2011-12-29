@@ -46,11 +46,10 @@
 	<?php echo $content; ?>
 
 	<div id="footer">
-		&copy; <?php echo date('Y'); ?> YProjects Team. &nbsp; 
+		&copy; <?php echo date('Y'); ?> YProjects Team. All rights reserved.<br /> 
 		<?php echo CHtml::link('Home',array('/site/index'));?>&nbsp;
 		<?php echo CHtml::link('About',array('/site/page','view'=>'about'));?>&nbsp;
-		<?php echo CHtml::link('Contact',array('/site/contact'));?><br/>
-		<?php echo Yii::powered(); ?>
+		<?php echo CHtml::link('Contact',array('/site/contact'));?> &nbsp; <?php echo Yii::powered(); ?>
 	</div><!-- footer -->
 
 </div><!-- page -->

@@ -7,6 +7,11 @@ $this->menu=array(
 );
 ?>
 
+<?php if(Yii::app()->user->hasFlash('passwordSaved')): ?>
+	<div class="flash-success">
+		<?php echo Yii::app()->user->getFlash('passwordSaved');?>
+	</div>
+<?php endif;?>
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'passwd-form-admin-form',
 	'enableAjaxValidation'=>true,

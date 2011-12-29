@@ -53,6 +53,13 @@ return array(
 		'db'=>array(
 			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
 		),
+		'authManager'=>array(
+			'class'=>'CDbAuthManager',
+			'connectionID'=>'db',
+			'itemTable'=>'tbl_auth_item',
+			'itemChildTable'=>'tbl_auth_itemchild',
+			'assignmentTable'=>'tbl_auth_assignment',
+		),
 		// uncomment the following to use a MySQL database
 		/*
 		'db'=>array(

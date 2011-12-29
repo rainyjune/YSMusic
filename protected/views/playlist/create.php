@@ -5,8 +5,8 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Playlist', 'url'=>array('index')),
-	array('label'=>'Manage Playlist', 'url'=>array('admin')),
+	array('label'=>'List Playlist', 'url'=>array('index'),'visible'=>Yii::app()->user->name=='admin'),
+	array('label'=>'Manage Playlist', 'url'=>array('admin'),'visible'=>Yii::app()->user->name=='admin'),
 );
 ?>
 

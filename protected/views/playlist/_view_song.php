@@ -2,8 +2,7 @@
 
 	<?php echo CHtml::link(CHtml::encode($data->name),array('song/view','id'=>$data->id)); ?>
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('url')); ?>:</b>
-	<?php echo CHtml::encode($data->url); ?>
+	<span style="float:right;" ><?php echo CHtml::link('Download',CHtml::encode($data->url)); ?></span>
 	<br />
 
 	<?php echo CHtml::encode($data->description); ?>

@@ -6,10 +6,9 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Playlist', 'url'=>array('index')),
-	array('label'=>'Create Playlist', 'url'=>array('create')),
+	array('label'=>'List Playlist', 'url'=>array('index'), 'visible'=>Yii::app()->user->name=='admin'),
 	array('label'=>'View Playlist', 'url'=>array('view', 'id'=>$model->id)),
-	array('label'=>'Manage Playlist', 'url'=>array('admin')),
+	array('label'=>'Manage Playlist', 'url'=>array('admin'), 'visible'=>Yii::app()->user->name=='admin'),
 );
 ?>
 

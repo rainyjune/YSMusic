@@ -5,11 +5,9 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Song', 'url'=>array('index')),
-	array('label'=>'Create Song', 'url'=>array('create')),
-	array('label'=>'Update Song', 'url'=>array('update', 'id'=>$model->id)),
-	array('label'=>'Delete Song', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
-	array('label'=>'Manage Song', 'url'=>array('admin')),
+	//array('label'=>'Update Song', 'url'=>array('update', 'id'=>$model->id), 'visible'=>$model->playlist->user->id==Yii::app()->user->id),
+	//array('label'=>'Delete Song', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?'), 'visible'=>$model->playlist->user->id==Yii::app()->user->id),
+	array('label'=>'Manage Song', 'url'=>array('admin'), 'visible'=>Yii::app()->user->name=='admin'),
 );
 ?>
 

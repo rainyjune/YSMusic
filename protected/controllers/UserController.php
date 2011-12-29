@@ -59,9 +59,15 @@ class UserController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$model=User::model()->with('profile')->findByPk($id);
+		$model=User::model()->with('profile', 'playlist')->findByPk($id);
+		$dataProvider=!empty($model->playlist)?new CActiveDataProvider('Song',array(
+			'criteria'=>array(
+				'condition'=>'playlist_id='.$model->playlist[0]->id
+			),
+		)):'';
 		$this->render('view',array(
 			'model'=>$model,
+			'dataProvider'=>$dataProvider
 		));
 	}
 
@@ -99,7 +105,10 @@ class UserController extends Controller
 		{
 			$model->attributes=$_POST['User'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			{
+				Yii::app()->user->setFlash('signupSuccess','Congratulations '.$model->username.'! You can login now.');
+				$this->redirect(array('/site/login'));
+			}
 		}
 		$this->render('signup',array(
 			'model'=>$model,

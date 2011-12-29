@@ -1,8 +1,11 @@
 <?php
-$this->menu=array(
-	array('label'=>'List User', 'url'=>array('index')),
-	array('label'=>'Manage User', 'url'=>array('admin')),
-);
+if(Yii::app()->user->name=='admin')
+{
+	$this->menu=array(
+		array('label'=>'List User', 'url'=>array('index')),
+		array('label'=>'Manage User', 'url'=>array('admin')),
+	);
+}
 ?>
 
 <h1>Sign up for YSMusic</h1>

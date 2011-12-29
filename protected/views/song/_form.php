@@ -22,7 +22,7 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->hiddenField($model,'playlist_id',array('value'=>isset($model->playlist_id)?$model->playlist_id:$playlist->id)); ?>
+		<?php echo $form->hiddenField($model,'playlist_id',array('value'=>!empty($model->playlist_id)?$model->playlist_id:$playlist->id)); ?>
 	</div>
 
 	<div class="row">

@@ -1,6 +1,6 @@
 <?php
 
-class PlaylistController extends Controller
+class AuthItemController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -30,16 +30,9 @@ class PlaylistController extends Controller
 				'actions'=>array('index','view'),
 				'users'=>array('*'),
 			),
-			array('allow', // allow authenticated user to perform 'create' action
-				'actions'=>array('create'),
+			array('allow', // allow authenticated user to perform 'create' and 'update' actions
+				'actions'=>array('create','update'),
 				'users'=>array('@'),
-				'expression'=>'!Playlist::model()->exists("user_id=:user_id",array(":user_id"=>$user->id))',
-			),
-			array(
-				'allow',
-				'actions'=>array('update'),
-				'users'=>array('@'),
-				'expression'=>'Playlist::model()->exists("user_id=:user_id AND id=:id",array(":user_id"=>$user->id,":id"=>$_GET["id"]))',
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array('admin','delete'),
@@ -57,18 +50,9 @@ class PlaylistController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$id=(int)$id;
-		$dataProvider=new CActiveDataProvider('Song',array(
-			'criteria'=>array(
-				'condition'=>'playlist_id='.$id,
-				'order'=>'order_in_playlist asc',
-			),
-			'pagination'=>array(
-				'pageSize'=>20,
-			),
+		$this->render('view',array(
+			'model'=>$this->loadModel($id),
 		));
-		$model=Playlist::model()->findByPk($id);
-		$this->render('view',array('model'=>$model,'dataProvider'=>$dataProvider));
 	}
 
 	/**
@@ -77,14 +61,19 @@ class PlaylistController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Playlist;
+		$model=new AuthItem;
+		$auth=Yii::app()->authManager;
 		$this->performAjaxValidation($model);
-		if(isset($_POST['Playlist']))
+		if(isset($_POST['AuthItem']))
 		{
-			$model->attributes=$_POST['Playlist'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			$model->attributes=$_POST['AuthItem'];
+			if($model->validate())
+			{
+				if($auth->createAuthItem($model->name,$model->type,$model->description,$model->bizrule))
+					$this->redirect(array('view','id'=>$model->name));
+			}
 		}
+
 		$this->render('create',array(
 			'model'=>$model,
 		));
@@ -102,11 +91,11 @@ class PlaylistController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Playlist']))
+		if(isset($_POST['AuthItem']))
 		{
-			$model->attributes=$_POST['Playlist'];
+			$model->attributes=$_POST['AuthItem'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('view','id'=>$model->name));
 		}
 
 		$this->render('update',array(
@@ -139,7 +128,7 @@ class PlaylistController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Playlist');
+		$dataProvider=new CActiveDataProvider('AuthItem');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -150,10 +139,10 @@ class PlaylistController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Playlist('search');
+		$model=new AuthItem('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Playlist']))
-			$model->attributes=$_GET['Playlist'];
+		if(isset($_GET['AuthItem']))
+			$model->attributes=$_GET['AuthItem'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -167,7 +156,7 @@ class PlaylistController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Playlist::model()->findByPk($id);
+		$model=AuthItem::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -179,7 +168,7 @@ class PlaylistController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='playlist-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='auth-item-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

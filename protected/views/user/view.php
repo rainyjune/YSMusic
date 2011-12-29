@@ -9,8 +9,14 @@ if(Yii::app()->user->name=='admin')
 		array('label'=>'Manage User', 'url'=>array('admin')),
 	);
 }
+elseif(!Yii::app()->user->isGuest)
+{
+	$this->menu=array(
+		array('label'=>'My Playlist','url'=>array('playlist/view','id'=>!empty($model->playlist)?$model->playlist[0]->id:''),'visible'=>isset($model->playlist)),
+		array('label'=>'Add Playlist','url'=>array('playlist/create'),'visible'=>(empty($model->playlist) && $_GET['id']==Yii::app()->user->id)),
+	);
+}
 ?>
-
 <h1>
 	<?php 
 	echo $model->username; 
@@ -52,4 +58,13 @@ $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
 	'attributes'=>$attributes,
 )); 
+
+if($dataProvider):?>
+<h4><?php echo $model->playlist[0]->name;?></h4>
+<?php
+	$this->widget('zii.widgets.CListView',array(
+		'dataProvider'=>$dataProvider,
+		'itemView'=>'application.views.playlist._view_song',
+	));
 ?>
+<?php endif;?>

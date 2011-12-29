@@ -20,7 +20,7 @@ class PasswdForm extends CFormModel
 	{
 		return array(
 			array('old_password, new_password, new_password_confirmation', 'required'),
-			array('new_password', 'compare', 'compareAttribute'=>'new_password_confirmation'),
+			array('new_password_confirmation', 'compare', 'compareAttribute'=>'new_password'),
 			// password needs to be authenticated
 			array('old_password', 'authenticate'),
 		);

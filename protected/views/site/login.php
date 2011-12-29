@@ -4,6 +4,11 @@ $this->breadcrumbs=array(
 	'Login',
 );
 ?>
+<?php if(Yii::app()->user->hasFlash('signupSuccess')):?>
+<div class="flash-success">
+	<?php echo Yii::app()->user->getFlash('signupSuccess');?>
+</div>
+<?php endif;?>
 
 <h1>Login</h1>
 

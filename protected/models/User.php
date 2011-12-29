@@ -48,7 +48,7 @@ class User extends CActiveRecord
 			array('email','email'),
 			array('email','unique'),
 			array('password', 'length', 'max'=>40),
-			array('password', 'compare', 'compareAttribute'=>'password_confirmation', 'on'=>'signup'),
+			array('password_confirmation', 'compare', 'compareAttribute'=>'password', 'on'=>'signup'),
 			array('password_confirmation', 'required', 'on'=>'signup'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -66,6 +66,7 @@ class User extends CActiveRecord
 		return array(
 			'profile'=>array(self::HAS_ONE,'UserProfile','user_id'),
 			'playlist'=>array(self::HAS_MANY,'Playlist','user_id'),
+			'playlistCount'=>array(self::STAT,'Playlist','user_id'),
 		);
 	}
 
