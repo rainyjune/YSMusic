@@ -17,6 +17,7 @@
  */
 class AuthItem extends CActiveRecord
 {
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return AuthItem the static model class
@@ -69,6 +70,14 @@ class AuthItem extends CActiveRecord
 		);
 	}
 
+	public static function getRoles()
+	{
+		$roles=Yii::app()->authManager->getRoles();
+		foreach($roles as &$v)
+			$v=$v->description;
+		return $roles;
+	}
+
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -103,5 +112,31 @@ class AuthItem extends CActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
+	}
+	
+	public static function getLowerItems($id)
+	{
+		$model=self::model()->findByPk($id);
+		$type=$model->type;
+		$lowerItemModel=self::model()->findAll('type<='.$type.' AND name!="'.$id.'"');
+		$newArray=array();
+		foreach($lowerItemModel as $v)
+		{
+			/*
+			if($v->type==0)
+				$newArray['operations'][]=$v;
+			elseif($v->type==1)
+				$newArray['tasks'][]=$v;
+			else
+				$newArray['roles'][]=$v;
+			*/
+		}
+		return $lowerItemModel;
+	}
+	protected function afterDelete()
+	{
+		parent::afterDelete();
+		AuthAssignment::model()->deleteAll('itemname="'.$this->name.'"');
+		AuthItemChild::model()->deleteAll('parent="'.$this->name.'" OR child="'.$this->name.'"');
 	}
 }

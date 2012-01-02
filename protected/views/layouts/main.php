@@ -31,6 +31,7 @@
 				array('label'=>'Home', 'url'=>array('/site/index')),
 				array('label'=>Yii::app()->user->name, 'url'=>array('/user/view','id'=>Yii::app()->user->id), 'visible'=>!Yii::app()->user->isGuest),
 				array('label'=>'Account', 'url'=>array('/account/index'), 'visible'=>!Yii::app()->user->isGuest),
+				array('label'=>'Permission', 'url'=>array('/permission/index'), 'visible'=>!Yii::app()->user->isGuest),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Signup', 'url'=>array('/user/signup'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)

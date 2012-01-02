@@ -12,4 +12,4 @@ $this->menu=array(
 
 <h1>Create AuthItem</h1>
 
-<?php echo $this->renderPartial('_form', array('model'=>$model)); ?>
+<?php echo $this->renderPartial('application.views.authItem._form', array('model'=>$model)); ?>

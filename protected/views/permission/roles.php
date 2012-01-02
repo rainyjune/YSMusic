@@ -31,7 +31,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
 			'template'=>'{update} {delete}',
 			'buttons'=>array(
 				'update'=>array(
-					'url'=>'Yii::app()->createUrl("authItem/update",array("id"=>$data->name))',
+					'url'=>'Yii::app()->createUrl("permission/update",array("id"=>$data->name))',
 				),
 			),
 		),

@@ -7,20 +7,6 @@ class RoleController extends Controller
 
 	public function actionIndex()
 	{
-		$auth=Yii::app()->authManager;
-		echo '<pre>';
-		var_dump($auth->getAuthItems(1));
-		echo '</pre>';
-		exit;
-		$dataProvider=new CActiveDataProvider('AuthItem',array(
-			'criteria'=>array(
-				'condition'=>'type=2',
-				'with'=>array('users'),
-			)
-		));
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
-		));
 	}
 
 	public function actionAddsubitem($id)

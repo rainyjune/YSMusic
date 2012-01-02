@@ -1,0 +1,41 @@
+<?php
+$this->breadcrumbs=array(
+	'Permissions'=>array('index'),
+);
+$this->widget('zii.widgets.grid.CGridView', array(
+	'dataProvider'=>$dataProvider,
+	'columns'=>array(
+		array(
+			'name'=>'ID',
+			'header'=>'ID',
+			'value'=>'$data->user->id',
+		),
+		array(
+			'name'=>'userName',
+			'header'=>'UserName',
+			'value'=>'$data->user->username',
+		),
+		array(
+			'name'=>'Email',
+			'header'=>'Email',
+			'value'=>'$data->user->email',
+		),
+		array(
+			'name'=>'role',
+			'header'=>'Role',
+			'value'=>'$data->itemname',
+		),
+		array(
+			'class'=>'CButtonColumn',
+			'template'=>'{update} {delete}',
+			'buttons'=>array(
+				'update'=>array(
+					'url'=>'Yii::app()->createUrl("permission/assign",array("id"=>$data->user->id))',
+				),
+				'delete'=>array(
+					'url'=>'Yii::app()->createUrl("permission/revoke",array("id"=>$data->user->id))',
+				),
+			),
+		),
+	),
+));
