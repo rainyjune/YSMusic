@@ -59,7 +59,7 @@ class UserController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$model=User::model()->with('profile', 'playlist')->findByPk($id);
+		$model=User::model()->findByPk($id);
 		$dataProvider=!empty($model->playlist)?new CActiveDataProvider('Song',array(
 			'criteria'=>array(
 				'condition'=>'playlist_id='.$model->playlist[0]->id

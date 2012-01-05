@@ -1,21 +1,13 @@
 <?php
-if(Yii::app()->user->name=='admin')
-{
 	$this->menu=array(
-		array('label'=>'List User', 'url'=>array('index')),
-		array('label'=>'Create User', 'url'=>array('create')),
-		array('label'=>'Update User', 'url'=>array('update', 'id'=>$model->id)),
-		array('label'=>'Delete User', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
-		array('label'=>'Manage User', 'url'=>array('admin')),
-	);
-}
-elseif(!Yii::app()->user->isGuest)
-{
-	$this->menu=array(
-		array('label'=>'My Playlist','url'=>array('playlist/view','id'=>!empty($model->playlist)?$model->playlist[0]->id:''),'visible'=>isset($model->playlist)),
+		array('label'=>'List User', 'url'=>array('index'),'visible'=>Yii::app()->user->name=='admin'),
+		array('label'=>'Create User', 'url'=>array('create'),'visible'=>Yii::app()->user->name=='admin'),
+		array('label'=>'Update User', 'url'=>array('update', 'id'=>$model->id),'visible'=>Yii::app()->user->name=='admin'),
+		array('label'=>'Delete User', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?'),'visible'=>Yii::app()->user->name=='admin'),
+		array('label'=>'Manage User', 'url'=>array('admin'),'visible'=>Yii::app()->user->name=='admin'),
+		array('label'=>'My Playlist','url'=>array('playlist/view','id'=>!empty($model->playlist)?$model->playlist[0]->id:''),'visible'=>(!Yii::app()->user->isGuest && isset($model->playlist))),
 		array('label'=>'Add Playlist','url'=>array('playlist/create'),'visible'=>(empty($model->playlist) && $_GET['id']==Yii::app()->user->id)),
 	);
-}
 ?>
 <h1>
 	<?php 
@@ -27,7 +19,7 @@ elseif(!Yii::app()->user->isGuest)
 
 <?php
 $attributes=array();
-if(isset($model->profile))
+if(!empty($model->profile))
 {
 	$attributes=array(
 		array(
@@ -60,7 +52,7 @@ $this->widget('zii.widgets.CDetailView', array(
 )); 
 
 if($dataProvider):?>
-<h4><?php echo $model->playlist[0]->name;?></h4>
+<h4>Playlist:<?php echo $model->playlist[0]->name;?></h4>
 <?php
 	$this->widget('zii.widgets.CListView',array(
 		'dataProvider'=>$dataProvider,

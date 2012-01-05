@@ -225,6 +225,11 @@ class PermissionController extends Controller
 		$this->render('assignment',array('dataProvider'=>$dataProvider));
 	}
 
+	/**
+	 * view and  update a role's item children
+	 * @param string $id
+	 *
+	 */
 	public function actionViewRole($id)
 	{
 		$auth=Yii::app()->authManager;
@@ -241,15 +246,18 @@ class PermissionController extends Controller
 		if(isset($_POST['viewRole']))
 		{
 			AuthItemChild::model()->deleteAllByAttributes(array('parent'=>$id));
-			$newTasks=$_POST['tasks'];
-			$newOperations=$_POST['operations'];
-			foreach($newTasks as $newTask)
+			$newTasks=@$_POST['tasks'];
+			$newOperations=@$_POST['operations'];
+			if(!empty($newTasks))
 			{
-				$newTaskOperations=array_keys($auth->getItemChildren($newTask));
-				$newOperations=array_diff($newOperations,$newTaskOperations);
+				foreach($newTasks as $newTask)
+				{
+					$newTaskOperations=array_keys($auth->getItemChildren($newTask));
+					$newOperations=array_diff($newOperations,$newTaskOperations);
+				}
+				foreach($newTasks as $v)
+					$auth->addItemChild($id,$v);
 			}
-			foreach($newTasks as $v)
-				$auth->addItemChild($id,$v);
 			foreach($newOperations as $_v)
 				$auth->addItemChild($id,$_v);
 			$this->redirect(array('permission/roles'));

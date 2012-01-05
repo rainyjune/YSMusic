@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This is the model class for table "tbl_auth_item".
  *
@@ -114,25 +113,6 @@ class AuthItem extends CActiveRecord
 		));
 	}
 	
-	public static function getLowerItems($id)
-	{
-		$model=self::model()->findByPk($id);
-		$type=$model->type;
-		$lowerItemModel=self::model()->findAll('type<='.$type.' AND name!="'.$id.'"');
-		$newArray=array();
-		foreach($lowerItemModel as $v)
-		{
-			/*
-			if($v->type==0)
-				$newArray['operations'][]=$v;
-			elseif($v->type==1)
-				$newArray['tasks'][]=$v;
-			else
-				$newArray['roles'][]=$v;
-			*/
-		}
-		return $lowerItemModel;
-	}
 	protected function afterDelete()
 	{
 		parent::afterDelete();

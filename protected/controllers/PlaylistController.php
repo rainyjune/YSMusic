@@ -57,7 +57,7 @@ class PlaylistController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$id=(int)$id;
+		$model=$this->loadModel($id);
 		$dataProvider=new CActiveDataProvider('Song',array(
 			'criteria'=>array(
 				'condition'=>'playlist_id='.$id,
@@ -67,7 +67,6 @@ class PlaylistController extends Controller
 				'pageSize'=>20,
 			),
 		));
-		$model=Playlist::model()->findByPk($id);
 		$this->render('view',array('model'=>$model,'dataProvider'=>$dataProvider));
 	}
 
